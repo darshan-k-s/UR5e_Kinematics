@@ -1,27 +1,13 @@
-% Description:
-%   Implements convertJointToPose, which computes the end-effector pose of a UR5e
-%   robot with its elbow (joint 3) locked at +90° from first principles using DH.
-%   Doesn't call any built-in FK functions.
-%   Check calculated values with real-time robot feedback by running the file. 
-%
-% Input:
-%   jointConfiguration – 1×5 vector [q1, q2, q4, q5, q6] in degrees
-%       (joint 3 is implicitly fixed at +90°)
-%
-% Output:
-%   outputPose – 1×6 vector [x, y, z, roll, pitch, yaw] in meters and radians
-%
-% Usage example:
-%   q5 = [0, -75, -105, 90, 0];
-%   pose = convertJointToPose(q5);
-%
-% Last edited: 21 July 2025
+% Project1PartA.m
+% MTRN4230 Project 1 25T2
+% Name: Darshan Komala Sreeramu
+% Zid: z5610741
 
 clear; clc;
 startup_rvc;
 
-host = '127.0.0.1'; % THIS IP ADDRESS MUST BE USED FOR THE VIRTUAL BOX VM
-%host = '192.168.0.100'; % THIS IP ADDRESS MUST BE USED FOR THE REAL ROBOT
+%host = '127.0.0.1'; % THIS IP ADDRESS MUST BE USED FOR THE VIRTUAL BOX VM
+host = '192.168.0.100'; % THIS IP ADDRESS MUST BE USED FOR THE REAL ROBOT
 port = 30003;
 rtde = rtde(host, port);
 
@@ -78,7 +64,7 @@ function correct = checkSolution(realPose, calucatedPose_converted)
     else
         i = 1;
         while i <= size(realPose,2)
-            if abs(realPose(i) - calucatedPose_converted(i)) > 0.008
+            if abs(realPose(i) - calucatedPose_converted(i)) > 0.005
                 errorString = "Mismatch between calculated an real solution at Pose value #" + i;
                 realString = "The real value is " + realPose(i);
                 yourString = "Your value is " + calucatedPose_converted(i);
@@ -112,7 +98,7 @@ function outputPose = convertJointToPose(jointConfiguration)
     theta = [
         angles(1);
         angles(2);
-        pi/2; % stuck at +90 deg
+        pi/2; % set at +90 deg
         angles(3);
         angles(4);
         angles(5)
@@ -149,7 +135,7 @@ function outputPose = convertJointToPose(jointConfiguration)
     p = atan2(-R(3,1), sqrt(R(3,2)^2 + R(3,3)^2));
     y = atan2(R(2,1), R(1,1));
     
-    % Return pose in format
+    % Return pose
     outputPose = [pos, r, p, y];
 end
 
